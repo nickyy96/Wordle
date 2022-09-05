@@ -20,7 +20,7 @@ const Header = ({setModal, hard}: HeaderProps) => {
                 <div className="wordle-header-text">Wordle</div>
                 {
                     hard && 
-                    <div className="wordle-header-hard">Hard*</div>
+                    <div className="wordle-header-hard">Hard</div>
                 }
             </div>
             <div className="menu-button-container">
