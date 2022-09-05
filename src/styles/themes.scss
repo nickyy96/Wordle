@@ -1,0 +1,16 @@
+@import 'variables';
+@import 'mixins';
+
+body[theme=light] {
+    @include spread-map($theme-map-light);
+    background-color: theme-var($--theme-background);
+}
+
+body[theme=dark] {
+    @include spread-map($theme-map-dark);
+    background-color: theme-var($--theme-background);
+}
+
+body[colorblind=on] {
+    @include spread-map($theme-map-colorblind);
+}

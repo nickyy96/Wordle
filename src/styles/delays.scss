@@ -1,0 +1,11 @@
+@for $i from 0 through 5 {
+    .cell[bounce-wait="#{$i}"] {
+        animation-delay: $i * 100ms;
+    }
+}
+
+@for $i from 0 through 5 {
+    .cell[flip-wait="#{$i}"] {
+        animation-delay: $i * 250ms;
+    }
+}

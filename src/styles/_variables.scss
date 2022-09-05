@@ -1,0 +1,63 @@
+$--theme-background: --theme-background;
+$--theme-key-bg: --theme-key-bg;
+$--theme-cell-border: --theme-cell-border;
+$--theme-after-pop: --theme-after-pop;
+$--theme-absent: --theme-absent;
+$--theme-present: --theme-present;
+$--theme-correct: --theme-correct;
+$--theme-unknown: --theme-unknown;
+$--theme-font: --theme-font;
+$--theme-font-color: --theme-font-color;
+$--theme-evaluated-font-color: --theme-evaluated-font-color;
+$--theme-modal-bg: --theme-modal-bg;
+$--theme-modal-shadow: --theme-modal-shadow;
+$--theme-modal-color: --theme-modal-color;
+$--theme-modal-border: --theme-modal-border;
+$--theme-error-bg: --theme-error-bg;
+$--theme-error-font: --theme-error-font;
+$--theme-keytrace: --theme-keytrace;
+
+// Default theme
+$theme-map-light: (
+    $--theme-background: #fff,
+    $--theme-key-bg: #d3d6da,
+    $--theme-cell-border: #d3d6da,
+    $--theme-after-pop: #878a8c,
+    $--theme-absent: #787c7e,
+    $--theme-present: #b59f3b,
+    $--theme-correct: #538d4e,
+    $--theme-font-color: black,
+    $--theme-evaluated-font-color: white,
+    $--theme-modal-bg: rgba(255, 255, 255, 0.5),
+    $--theme-modal-shadow: rgba(0, 0, 0, 0.2),
+    $--theme-modal-color: white,
+    $--theme-modal-border: #f6f7f8,
+    $--theme-error-bg: black,
+    $--theme-error-font: white,
+    $--theme-keytrace: darkred
+);
+    
+// Override the default light theme
+$theme-map-dark: (
+    $--theme-background: #121213,
+    $--theme-key-bg: #818384,
+    $--theme-cell-border: #3a3a3c,
+    $--theme-after-pop: #565758,
+    $--theme-absent: #3a3a3c,
+    $--theme-present: #b59f3b,
+    $--theme-correct: #538d4e,
+    $--theme-font-color: white,
+    $--theme-evaluated-font-color: white,
+    $--theme-modal-bg: rgba(0, 0, 0, 0.5),
+    $--theme-modal-shadow: rgba(0, 0, 0, 0.2),
+    $--theme-modal-color: #121213,
+    $--theme-modal-border: #1a1a1b,
+    $--theme-error-bg: white,
+    $--theme-error-font: black,
+    $--theme-keytrace: darkred
+);
+
+$theme-map-colorblind: (
+    $--theme-present: #85c0f9,
+    $--theme-correct: #f5793a,
+)
