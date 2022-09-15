@@ -13,11 +13,23 @@ interface ModalProps {
   setHard: Dispatch<SetStateAction<boolean>>;
 }
 
+const loadBlind = () => {
+  let stored = localStorage.getItem('colorBlind')
+  if (stored === 'on') return true
+  return false
+}
+
+const loadLight = () => {
+  let stored = localStorage.getItem('theme')
+  if (stored === 'light') return true
+  return false
+}
+
 const Modal = ({ showModal, toggle, modal, setModal, hard, setHard }: ModalProps) => {
   const [toggleSlow, setToggleSlow] = useState(false);
   const [toggleFast, setToggleFast] = useState(false);
-  const [light, setLight] = useState(false);
-  const [blind, setBlind] = useState(false);
+  const [light, setLight] = useState(loadLight());
+  const [blind, setBlind] = useState(loadBlind());
 
   const close = () => setModal("");
   return (

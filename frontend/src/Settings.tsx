@@ -16,14 +16,27 @@ const Settings = ({hard, setHard, light, setLight, blind, setBlind}: SettingsPro
     
     const toggleDark = () => {
         let elt = document.getElementById('wordle-body')
-        if (!light) elt.setAttribute('theme', 'light')
-        else elt.setAttribute('theme', 'dark')
+        if (!light) {
+            elt.setAttribute('theme', 'light')
+            localStorage.setItem('theme', 'light')
+        } 
+        else {
+            elt.setAttribute('theme', 'dark')
+            localStorage.setItem('theme', 'dark')
+        }
         setLight(!light)
     }
+
     const toggleColorblind = () => {
         let elt = document.getElementById('wordle-body')
-        if (blind) elt.setAttribute('colorblind', 'off')
-        else elt.setAttribute('colorblind', 'on')
+        if (blind) {
+            elt.setAttribute('colorblind', 'off')
+            localStorage.setItem('colorBlind', 'off')
+        }
+        else {
+            elt.setAttribute('colorblind', 'on')
+            localStorage.setItem('colorBlind', 'on')
+        }
         setBlind(!blind)
     }
 

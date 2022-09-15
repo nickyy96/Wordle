@@ -16,12 +16,83 @@ interface BoardProps {
     setModal: Dispatch<SetStateAction<string>>,
 }
 
+const clearCache = () => {
+    for(let idx = 0; idx < ALPHABET.length; idx++) {
+        localStorage.removeItem(ALPHABET.charAt(idx));
+    }
+    localStorage.removeItem('previous')
+    localStorage.removeItem('previousColors')
+    localStorage.removeItem('input')
+}
+
+const loadKeys = (): Map<string, number> => {
+    let baseMap = new Map<string, number>();
+    for (let i = 0; i < ALPHABET.length; i++) {
+        let currentChar = ALPHABET.charAt(i);
+        let keyColor = localStorage.getItem(currentChar);
+
+        if (keyColor !== 'unknown' && keyColor !== null) {
+            let idx = 2;
+            if (keyColor === 'absent') idx = 0
+            else if (keyColor === 'present') idx = 1
+            baseMap.set(currentChar, idx)
+        }
+    }
+    return baseMap;
+}
+
+const loadPrevious = (): rowProps[] => {
+    let arr: rowProps[] = [];
+    if (localStorage.getItem('previous') !== null)
+        return JSON.parse(localStorage.getItem('previous'))
+    return arr;
+}
+
+const loadColors = (): number[][] => {
+    let arr: number[][] = [];
+    if (localStorage.getItem('previousColors') !== null) 
+        return JSON.parse(localStorage.getItem('previousColors'))
+    return arr
+}
+
 const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setModal}: BoardProps) => {
-    const curRowRef = useRef<number>(0);
-    const previous = useRef<rowProps[]>([]);
+    const previous = useRef<rowProps[]>(loadPrevious());
+    const previousColors = useRef<number[][]>(loadColors());
+    const curRowRef = useRef<number>(previous.current.length);
     const lock = useRef<boolean>(false);
-    const keys = useRef<Map<string, number>>(new Map<string, number>());
+    const keys = useRef<Map<string, number>>(loadKeys());
     const colors = ['absent', 'present', 'correct'];
+
+    useEffect(() => {
+        for (let i = 0; i < ALPHABET.length; i++) {
+            let color = keys.current.get(ALPHABET.charAt(i))
+            document.getElementById(ALPHABET.charAt(i)).setAttribute("data-state", `${colors[color]}`)
+        }
+        for (let rowIdx = 0; rowIdx < previous.current.length; rowIdx++) {
+            for (let cellIndex = rowIdx * WORD_LENGTH, iterator = 0; 
+                iterator < WORD_LENGTH; 
+                cellIndex++, iterator++) {
+                    let elt = document.getElementsByClassName('cell')[cellIndex];
+                    elt.setAttribute("flip-wait", `${iterator}`);
+                    setTimeout(() => elt.classList.add('flip-in'));
+
+                    setTimeout(() => {
+                        elt.setAttribute("flip-wait", '0');
+                        elt.classList.add('flip-out');
+                        elt.setAttribute("data-state", `${colors[previousColors.current[rowIdx][iterator]]}`)
+                        setTimeout(() => {
+                            elt.classList.remove('flip-in');
+                            elt.classList.remove('flip-out');
+                            elt.removeAttribute("flip-wait");
+                        }, FLIP_LENGTH + 50);
+                    }, FLIP_LENGTH * (iterator + 1))
+            }
+        }
+        for (let idx = curRowRef.current * WORD_LENGTH; idx < curRowRef.current * WORD_LENGTH + input.length; idx++) {
+            let elt = document.getElementsByClassName('cell')[idx];
+            elt.classList.add('after-bubble');
+        }
+    }, [])
 
     const handleWin = (matches: number[]) => {
         if (matches.includes(0) || matches.includes(1)) return
@@ -45,6 +116,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                 setTimeout(() => {
                     elt.remove()
                     setWin(true)
+                    clearCache();
                     setModal('win')
                 }, 195)
             }, 1500)
@@ -56,14 +128,20 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
         else return "unknown";
     }
 
-    const updateKeys = (input: string[], colors: number[]) => {
-        for (let i = 0; i < WORD_LENGTH; i++) updateKey(input[i], colors[i]);
+    const updateKeys = (input: string[], colorsNew: number[]) => {
+        for (let i = 0; i < WORD_LENGTH; i++) updateKey(input[i], colorsNew[i]);
         for (let i = 0; i < ALPHABET.length; i++) {
             let color = getColors(ALPHABET.charAt(i))
             document.getElementById(ALPHABET.charAt(i)).setAttribute("data-state", `${color}`)
         }
 
-        handleWin(colors);
+        handleWin(colorsNew);
+
+        for (let i = 0; i < ALPHABET.length; i++) {
+            let currentChar = ALPHABET.charAt(i)
+            if (keys.current.get(currentChar) === undefined) localStorage.setItem(currentChar, 'unknown')
+            else localStorage.setItem(currentChar, colors[keys.current.get(currentChar)])
+        }
     }
 
     const updateKey = (key: string, value: number) => {
@@ -129,7 +207,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                     if (dictForWord.has(char)) numArr = dictForWord.get(char)
                     dictForWord.set(char, [...numArr, color])
 
-                    if (hard) if (color < keys.current.get(elt.textContent)) {
+                    if (hard) if (color < keys.current.get(elt.textContent) || (color === 0 && color === keys.current.get(elt.textContent))) {
                         handleWrongWord();
                         return;
                     }
@@ -159,7 +237,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                 cellIndex++, iterator++) {
                     let elt = document.getElementsByClassName('cell')[cellIndex];
                     elt.setAttribute("flip-wait", `${iterator}`);
-                    elt.classList.add('flip-in');
+                    setTimeout(() => elt.classList.add('flip-in'));
 
                     setTimeout(() => {
                         elt.setAttribute("flip-wait", '0');
@@ -182,6 +260,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                     setTimeout(() => {
                         elt.remove()
                         setWin(true)
+                        clearCache()
                         setModal('lose')
                     }, 195)
                 }, 1500)
@@ -189,7 +268,12 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             }
 
             previous.current = [...previous.current, {row: input, active: true}];
+            previousColors.current = [...previousColors.current, colorsInWord]
             setInput([]);
+
+            localStorage.setItem('previousColors', JSON.stringify(previousColors.current))
+            localStorage.setItem('previous', JSON.stringify(previous.current));
+
             if (curRowRef.current === NUM_ROWS) curRowRef.current = 0;
             else curRowRef.current = curRowRef.current + 1;
         } else if (e.keyCode >= 65 && e.keyCode <= 90) {

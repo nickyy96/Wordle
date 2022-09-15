@@ -3,6 +3,7 @@ import { WORD_LIST } from "./words";
 export const NUM_ROWS = 6;
 export const WORD_LENGTH = 5;
 export const WORD = WORD_LIST[Math.floor(Math.random()*WORD_LIST.length)];
+// export const WORD = 'cacao'
 export const ALPHABET = "QWERTYUIOPASDFGHJKLZXCVBNM"
 export const FLIP_LENGTH = 250;
 
