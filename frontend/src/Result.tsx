@@ -1,22 +1,50 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import Chart from "./Chart";
 
 interface ResultProps {
     win: boolean
+    minutes: number
+    setMinutes: Dispatch<SetStateAction<number>>
+    seconds: number
+    setSeconds: Dispatch<SetStateAction<number>>
+    newWord: boolean
+    setNewWord: Dispatch<SetStateAction<boolean>>
 }
 
-const Result = ({win}: ResultProps) => {
+const Result = ({win, minutes, setMinutes, seconds, setSeconds, newWord, setNewWord}: ResultProps) => {
     const [message, setMessage] = useState((win) ? "Victory!" : "Refresh for another try!")
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (new Date().getMinutes() === 58) setNewWord(true)
+            setMinutes(60 - new Date().getMinutes())
+            setSeconds(60 - new Date().getSeconds())
+        }, 1000)
+    }, [minutes, seconds])
+
     useEffect(() => {
         setTimeout(() => {
             setMessage('Contact Me!')
-        }, 5000)
+        }, 10000)
     }, [])
     return (
         <>
             <h1 className='modal-header'>
                 {message}
             </h1>
-            <section className='modal-section'>
+            <section className="modal-section">
+                <Chart/>
+                <br></br>
+                {(minutes !== 60) &&
+                <div className='clock-container'>
+                    <div className="next-wordle-before">NEXT WORDLE</div>
+                    {(seconds === 60) ?
+                    <div className="next-wordle">{minutes < 10 ? '0' + minutes : minutes}:00</div> :
+                    <div className="next-wordle">{minutes < 10 ? '0' + minutes : minutes}:{(seconds < 10) ? '0' + seconds : seconds}</div>}
+                </div>
+                }
+            </section>
+            {/* <section className='modal-section'>
                 <div className="modal-examples">
                     <div className="socials-container">
                         <div className="socials-unit">
@@ -40,7 +68,7 @@ const Result = ({win}: ResultProps) => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
             <div className="modal-footer">
                 <p></p>
             </div>

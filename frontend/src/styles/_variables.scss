@@ -16,6 +16,12 @@ $--theme-modal-border: --theme-modal-border;
 $--theme-error-bg: --theme-error-bg;
 $--theme-error-font: --theme-error-font;
 $--theme-keytrace: --theme-keytrace;
+$--theme-slice-one: --theme-slice-one;
+$--theme-slice-two: --theme-slice-two;
+$--theme-slice-three: --theme-slice-three;
+$--theme-slice-four: --theme-slice-four;
+$--theme-slice-five: --theme-slice-five;
+$--theme-slice-six: --theme-slice-six;
 
 // Default theme
 $theme-map-light: (
@@ -34,7 +40,13 @@ $theme-map-light: (
     $--theme-modal-border: #f6f7f8,
     $--theme-error-bg: black,
     $--theme-error-font: white,
-    $--theme-keytrace: darkred
+    $--theme-keytrace: darkred,
+    $--theme-slice-one: #E6E6FA,
+    $--theme-slice-two: #D8BFD8,
+    $--theme-slice-three: #DDA0DD,
+    $--theme-slice-four: #EE82EE,
+    $--theme-slice-five: #DA70D6,
+    $--theme-slice-six: #BA55D3
 );
     
 // Override the default light theme
@@ -54,7 +66,13 @@ $theme-map-dark: (
     $--theme-modal-border: #1a1a1b,
     $--theme-error-bg: white,
     $--theme-error-font: black,
-    $--theme-keytrace: darkred
+    $--theme-keytrace: darkred,
+    $--theme-slice-one: #f49498,
+    $--theme-slice-two: #ADD8E6,
+    $--theme-slice-three: #6a9dfa,
+    $--theme-slice-four: #1E90FF,
+    $--theme-slice-five: #61090d,
+    $--theme-slice-six: #e3161f
 );
 
 $theme-map-colorblind: (

@@ -1,13 +1,14 @@
 import { Dispatch, SetStateAction, useRef } from "react";
-import { WORD, WORD_LENGTH } from "./utils/globals";
+import { WORD_LENGTH } from "./utils/globals";
 import { rowProps } from "./utils/types";
 
 interface inputRowProps {
-  row: rowProps
-  setLock: () => void
+  row: rowProps,
+  setLock: () => void,
+  word: string,
 }
 
-const Row = ({ row, setLock }: inputRowProps) => {
+const Row = ({ row, setLock, word }: inputRowProps) => {
   const lockRef = useRef(true);
   
   const padding = (input: string[]) => {
@@ -37,7 +38,7 @@ const Row = ({ row, setLock }: inputRowProps) => {
           })
         : padding(row.row).map((letter, index) => {
             if (row.active) {
-              if (letter === WORD.charAt(index)) {
+              if (letter === word.charAt(index)) {
                 if (index + 1 === WORD_LENGTH && lockRef.current) setLock()
               } 
               else lockRef.current = false;

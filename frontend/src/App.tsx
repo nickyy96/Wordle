@@ -5,6 +5,7 @@ import KeyboardContainer from "./KeyboardContainer";
 import Modal from "./Modal";
 import Board from "./Board";
 import Header from "./Header";
+import { NUM_ROWS, URL, WORD_LENGTH } from "./utils/globals";
 
 const loadInput = (): string[] => {
   let arr: string[] = [];
@@ -13,12 +14,82 @@ const loadInput = (): string[] => {
     return arr;
 }
 
+const makeMap = (word: string) => {
+  let tempWordMap = new Map();
+
+  for (let idx = 0; idx < WORD_LENGTH; idx++) {
+    let count = 1;
+    let char = word.charAt(idx).toLocaleUpperCase()
+    if (tempWordMap.has(char)) count = tempWordMap.get(char) + 1;
+    tempWordMap.set(char, count);
+  }
+
+  return tempWordMap;
+}
+
 const App = () => {
   const [input, setInput] = useState<string[]>(loadInput());
   const [win, setWin] = useState(false);
   const [modal, setModal] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
+  const [word, setWord] = useState<string>("");
+  const [wordMap, setWordMap] = useState<Map<string, number>>(new Map());
   const [hard, setHard] = useState<boolean>(localStorage.getItem('hard') === 'true');
+
+  useEffect(() => {
+
+    let check = localStorage.getItem('newUser');
+    if (check === null) {
+      setModal('info')
+      localStorage.setItem('newUser', 'no')
+    }
+
+    for (let idx = 0; idx <= NUM_ROWS; idx++) {
+      if (idx == 0) {
+        let result = localStorage.getItem('losses');
+        if (result === null) {
+          localStorage.setItem('losses', JSON.stringify({num: 0}))
+        }
+      } else {
+        let result = localStorage.getItem(`win${idx}`)
+        if (result === null) {
+          localStorage.setItem(`win${idx}`, JSON.stringify({num: 0}))
+        }
+      }
+    }
+
+    let result = localStorage.getItem('streak');
+    if (result === null) localStorage.setItem('streak', JSON.stringify({num: 0}))
+
+    let previous = localStorage.getItem('previous');
+    let input = localStorage.getItem('input');
+    let breakout = false;
+    if (previous !== null) {
+      if (JSON.parse(previous).length > 0) {
+        let tempWord = localStorage.getItem('wordle-word')
+        setWord(tempWord)
+        setWordMap(makeMap(tempWord))
+      } else breakout = true;
+    } else if (input !== null) {
+      if (JSON.parse(input).length > 0) {
+        let tempWord = localStorage.getItem('wordle-word')
+        setWord(tempWord)
+        setWordMap(makeMap(tempWord))
+      } else breakout = true;
+    }
+    if (breakout) {
+      let tempWord = "";
+      fetch(URL + "/api")
+          .then((res) => {
+              return res.json();
+          }).then(data => {
+              setWord(data.word);
+              tempWord = data.word;
+              localStorage.setItem('wordle-word', tempWord);
+              setWordMap(makeMap(tempWord));
+          })
+      }
+  }, [])
 
   useEffect(() => {
     let value = 'false';
@@ -39,6 +110,7 @@ const App = () => {
     else elt.setAttribute('colorblind', 'off')
   }, [])
 
+  if (word === "") return <div className="failed-fetch">Failed to fetch word</div>
   return (
     <>
       <Header setModal={setModal} hard={hard}></Header>
@@ -51,6 +123,8 @@ const App = () => {
         setWin={setWin}
         hard={hard}
         setModal={setModal}
+        word={word}
+        wordMap={wordMap}
       ></Board>
       <Modal
         showModal={modal !== ""}

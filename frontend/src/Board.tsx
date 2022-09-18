@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { HighlightPress } from "./KeyboardContainer";
 import Row from "./Row";
-import { ALPHABET, FLIP_LENGTH, NUM_ROWS, WORD, WORD_LENGTH, WORD_MAP } from "./utils/globals";
+import { ALPHABET, FLIP_LENGTH, NUM_ROWS, WORD_LENGTH } from "./utils/globals";
 import { rowProps } from "./utils/types";
 import { WORD_LIST } from "./utils/words";
 
@@ -14,9 +14,22 @@ interface BoardProps {
     setWin: Dispatch<SetStateAction<boolean>>,
     hard: boolean,
     setModal: Dispatch<SetStateAction<string>>,
+    word: string,
+    wordMap: Map<string, number>,
 }
 
-const clearCache = () => {
+const clearCache = (row: number) => {
+    if (row === 0) {
+        let previous = localStorage.getItem(`losses`);
+        localStorage.setItem(`losses`, JSON.stringify({num: (JSON.parse(previous).num + 1)}))
+        localStorage.setItem('streak', JSON.stringify({num: 0}))
+    } else {
+        let previous = localStorage.getItem(`win${row}`);
+        localStorage.setItem(`win${row}`, JSON.stringify({num: (JSON.parse(previous).num + 1)}))
+        let streakPrevious = localStorage.getItem('streak');
+        localStorage.setItem('streak', JSON.stringify({num: JSON.parse(streakPrevious).num + 1}))
+    }
+
     for(let idx = 0; idx < ALPHABET.length; idx++) {
         localStorage.removeItem(ALPHABET.charAt(idx));
     }
@@ -55,7 +68,7 @@ const loadColors = (): number[][] => {
     return arr
 }
 
-const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setModal}: BoardProps) => {
+const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setModal, word, wordMap}: BoardProps) => {
     const previous = useRef<rowProps[]>(loadPrevious());
     const previousColors = useRef<number[][]>(loadColors());
     const curRowRef = useRef<number>(previous.current.length);
@@ -116,7 +129,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                 setTimeout(() => {
                     elt.remove()
                     setWin(true)
-                    clearCache();
+                    clearCache(curRowRef.current);
                     setModal('win')
                 }, 195)
             }, 1500)
@@ -161,8 +174,8 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
     const getAfter = (cellIndex: number, index: number, char: string) => {
         let count = 0;
         for (let idx = index + 1, cellIdx = cellIndex + 1; idx < WORD_LENGTH; idx++, cellIdx++) {
-            if (WORD.charAt(idx).toLocaleUpperCase() === document.getElementsByClassName('cell')[cellIdx].textContent) {
-                if (WORD.charAt(idx).toLocaleUpperCase() === char) count++;
+            if (word.charAt(idx).toLocaleUpperCase() === document.getElementsByClassName('cell')[cellIdx].textContent) {
+                if (word.charAt(idx).toLocaleUpperCase() === char) count++;
             }
         }
 
@@ -194,9 +207,9 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                     let elt = document.getElementsByClassName('cell')[cellIndex];
                     let color = 0;
                     let char = elt.textContent.toLocaleUpperCase();
-                    if (char === WORD.toLocaleUpperCase().charAt(iterator)) color = 2;
-                    else  if (WORD.toLocaleUpperCase().includes(char!)) {
-                        if (getBefore(dictForWord, char) + getAfter(cellIndex, iterator, char) < WORD_MAP.get(char)) color = 1;
+                    if (char === word.toLocaleUpperCase().charAt(iterator)) color = 2;
+                    else  if (word.toLocaleUpperCase().includes(char!)) {
+                        if (getBefore(dictForWord, char) + getAfter(cellIndex, iterator, char) < wordMap.get(char)) color = 1;
                         else color = 0;
                     }
 
@@ -250,17 +263,29 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                         }, FLIP_LENGTH + 50);
                     }, FLIP_LENGTH * (iterator + 1))
             }
+            
             setTimeout(() => updateKeys(keysInWord, colorsInWord), FLIP_LENGTH * 5);
+            if (previous.current.length === NUM_ROWS - 1 ) {
+                let check = true;
+                for (let idx = 0; idx < WORD_LENGTH; idx++) {
+                    if (word.charAt(idx) !== input[idx]) {
+                        check = false;
+                        break;
+                    }
+                }
 
-            if (previous.current.length === NUM_ROWS -1 ) {
-                setMessages([...messages, WORD.toLocaleUpperCase()])
+                if (check) {
+                    curRowRef.current = 6;
+                    return;
+                }
+                setMessages([...messages, word.toLocaleUpperCase()])
                 setTimeout(() => {
                     let elt = document.getElementById('result-message');
                     elt.classList.add('deleting');
                     setTimeout(() => {
                         elt.remove()
                         setWin(true)
-                        clearCache()
+                        clearCache(0)
                         setModal('lose')
                     }, 195)
                 }, 1500)
@@ -274,8 +299,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             localStorage.setItem('previousColors', JSON.stringify(previousColors.current))
             localStorage.setItem('previous', JSON.stringify(previous.current));
 
-            if (curRowRef.current === NUM_ROWS) curRowRef.current = 0;
-            else curRowRef.current = curRowRef.current + 1;
+            curRowRef.current = curRowRef.current + 1;
         } else if (e.keyCode >= 65 && e.keyCode <= 90) {
             HighlightPress(document.getElementById(e.key.toLocaleUpperCase()));
             if (previous.current.length > NUM_ROWS - 1) return
@@ -343,7 +367,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             <div className='board'>
                 {
                     process().map((row, index) => {
-                        return <Row row={row} key={index} setLock={setLock}></Row>
+                        return <Row row={row} key={index} setLock={setLock} word={word}></Row>
                     })
                 }
             </div>
