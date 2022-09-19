@@ -17,7 +17,7 @@ const PORT = 8080;
 app.get("/api", (req, res) => {
   const newDate = new Date();
   if (newDate.getHours() != hour) {
-    hour = newDate.getMinutes();
+    hour = newDate.getHours();
     word = WORD_LIST[Math.floor(Math.random()*WORD_LIST.length)];
   }
   console.log(word);
