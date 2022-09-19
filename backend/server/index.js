@@ -1,6 +1,6 @@
-import express from 'express';
-import cors from 'cors';
-import { WORD_LIST } from '../utils/words.js';
+const express = require('express');
+const cors = require('cors')
+const { WORD_LIST } = require('../utils/words.js');
 
 const app = express();
 

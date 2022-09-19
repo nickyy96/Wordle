@@ -1,4 +1,5 @@
-export const WORD_LIST = [
+module.exports = { 
+  WORD_LIST: [
     "which",
     "there",
     "their",
@@ -5756,5 +5757,6 @@ export const WORD_LIST = [
     "rumba",
     "biffy",
     "pupal",
-  ];
+  ]
+}
   
