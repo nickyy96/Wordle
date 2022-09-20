@@ -7,18 +7,16 @@ interface ResultProps {
     setMinutes: Dispatch<SetStateAction<number>>
     seconds: number
     setSeconds: Dispatch<SetStateAction<number>>
-    newWord: boolean
-    setNewWord: Dispatch<SetStateAction<boolean>>
 }
 
-const Result = ({win, minutes, setMinutes, seconds, setSeconds, newWord, setNewWord}: ResultProps) => {
+const Result = ({win, minutes, setMinutes, seconds, setSeconds }: ResultProps) => {
     const [message, setMessage] = useState((win) ? "Victory!" : "Refresh for another try!")
 
     useEffect(() => {
         setTimeout(() => {
-            if (new Date().getMinutes() === 58) setNewWord(true)
-            setMinutes(60 - new Date().getMinutes())
             setSeconds(60 - new Date().getSeconds())
+            if (new Date().getSeconds() === 0) setMinutes(60 - new Date().getMinutes())
+            else setMinutes(59 - new Date().getMinutes())
         }, 1000)
     }, [minutes, seconds])
 
@@ -33,7 +31,7 @@ const Result = ({win, minutes, setMinutes, seconds, setSeconds, newWord, setNewW
                 {message}
             </h1>
             <section className="modal-section">
-                <Chart/>
+                <Chart message={true}/>
                 <br></br>
                 {(minutes !== 60) &&
                 <div className='clock-container'>

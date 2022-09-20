@@ -3,6 +3,7 @@ import InfoContent from "./InfoContent";
 import PersonalContent from "./PersonalContent";
 import Settings from "./Settings";
 import Result from "./Result";
+import Stats from "./Stats";
 
 interface ModalProps {
   showModal: boolean;
@@ -25,6 +26,15 @@ const loadLight = () => {
   return false;
 };
 
+const getSeconds = () => {
+  return 60 - new Date().getSeconds();
+}
+
+const getMinutes = () => {
+  if (new Date().getSeconds() === 0) return 60 - new Date().getMinutes()
+  return 59 - new Date().getMinutes()
+}
+
 const Modal = ({
   showModal,
   toggle,
@@ -37,11 +47,13 @@ const Modal = ({
   const [toggleFast, setToggleFast] = useState(false);
   const [light, setLight] = useState(loadLight());
   const [blind, setBlind] = useState(loadBlind());
-  const [minutes, setMinutes] = useState(60 - new Date().getMinutes());
-  const [seconds, setSeconds] = useState(60 - new Date().getSeconds());
-  const [newWord, setNewWord] = useState(false);
+  const [minutes, setMinutes] = useState(getMinutes());
+  const [seconds, setSeconds] = useState(getSeconds());
 
-  const close = () => setModal("");
+  const close = () => {
+    localStorage.setItem('toggle', "");
+    setModal("");
+  }
   return (
     <>
       {showModal && (
@@ -75,8 +87,6 @@ const Modal = ({
                     setMinutes={setMinutes}
                     seconds={seconds}
                     setSeconds={setSeconds}
-                    newWord={newWord}
-                    setNewWord={setNewWord}
                   />
                 )
               }
@@ -87,9 +97,10 @@ const Modal = ({
                   setMinutes={setMinutes}
                   seconds={seconds}
                   setSeconds={setSeconds}
-                  newWord={newWord}
-                  setNewWord={setNewWord}
                 />
+              )}
+              {toggle === 'stats' && (
+                <Stats/>
               )}
             </div>
             {modal !== "win" && modal !== "lose" && (

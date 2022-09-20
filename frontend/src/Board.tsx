@@ -1,4 +1,3 @@
-import { memberExpression } from "@babel/types";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { HighlightPress } from "./KeyboardContainer";
 import Row from "./Row";
@@ -31,12 +30,7 @@ const clearCache = (row: number) => {
         localStorage.setItem('streak', JSON.stringify({num: JSON.parse(streakPrevious).num + 1}))
     }
 
-    for(let idx = 0; idx < ALPHABET.length; idx++) {
-        localStorage.removeItem(ALPHABET.charAt(idx));
-    }
-    localStorage.removeItem('previous')
-    localStorage.removeItem('previousColors')
-    localStorage.removeItem('input')
+    localStorage.setItem('result', 'true');
 }
 
 const loadKeys = (): Map<string, number> => {
@@ -153,6 +147,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                     elt.remove()
                     setWin(true)
                     clearCache(curRowRef.current);
+                    localStorage.setItem('toggle', 'win')
                     setModal('win')
                 }, 195)
             }, 1500)
@@ -206,7 +201,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
     }
 
     const handleInput = (e: KeyboardEvent) => {
-        if (lock.current) return
+        if (lock.current || win) return
         if (e.key === 'Enter') {
             HighlightPress(document.getElementById('enter'));
             if (previous.current.length > NUM_ROWS - 1) return
@@ -290,7 +285,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
 
                     console.log(key, temp, mem)
                     // not enough correct or present
-                    if (mem.correct.count > temp.correct.count || mem.present > temp.present) {
+                    if (mem.correct.count + mem.present > temp.correct.count + temp.present) {
                         handleWrongWord();
                         return
                     }
@@ -374,6 +369,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                         setWin(true)
                         clearCache(0)
                         setModal('lose')
+                        localStorage.setItem('toggle', 'lose')
                     }, 195)
                 }, 1500)
                 return
