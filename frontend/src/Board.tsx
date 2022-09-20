@@ -1,8 +1,9 @@
+import { memberExpression } from "@babel/types";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { HighlightPress } from "./KeyboardContainer";
 import Row from "./Row";
 import { ALPHABET, FLIP_LENGTH, NUM_ROWS, WORD_LENGTH } from "./utils/globals";
-import { rowProps } from "./utils/types";
+import { rowProps, userKnowledge } from "./utils/types";
 import { WORD_LIST } from "./utils/words";
 
 interface BoardProps {
@@ -68,12 +69,34 @@ const loadColors = (): number[][] => {
     return arr
 }
 
+const loadKnowledge = (): Map<string, userKnowledge> => {
+    if (localStorage.getItem('knowledge') !== null) return decodeMap(localStorage.getItem('knowledge'))
+    return new Map<string, userKnowledge>();
+}
+
+const encodeMap = (map: Map<string, userKnowledge>) => {
+    let arr = []
+    for (let key of map.keys()) {
+        arr.push({key: key, knowledge: map.get(key)})
+    }
+    return arr
+}
+
+const decodeMap = (encoded: string): Map<string, userKnowledge> => {
+    let map = new Map<string, userKnowledge>();
+    for (let key of JSON.parse(encoded)) {
+        map.set(key.key, key.knowledge)
+    }
+    return map
+}
+
 const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setModal, word, wordMap}: BoardProps) => {
     const previous = useRef<rowProps[]>(loadPrevious());
     const previousColors = useRef<number[][]>(loadColors());
     const curRowRef = useRef<number>(previous.current.length);
     const lock = useRef<boolean>(false);
     const keys = useRef<Map<string, number>>(loadKeys());
+    const knowledge = useRef<Map<string, userKnowledge>>(loadKnowledge());
     const colors = ['absent', 'present', 'correct'];
 
     useEffect(() => {
@@ -213,14 +236,14 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                         else color = 0;
                     }
 
-                    colorsInWord.push(color)
+                    colorsInWord.push(color);
                     keysInWord.push(char);
 
                     let numArr: number[] = [];
                     if (dictForWord.has(char)) numArr = dictForWord.get(char)
                     dictForWord.set(char, [...numArr, color])
 
-                    if (hard) if (color < keys.current.get(elt.textContent) || (color === 0 && color === keys.current.get(elt.textContent))) {
+                    if (hard) if (color === 0 && color === keys.current.get(elt.textContent)) {
                         handleWrongWord();
                         return;
                     }
@@ -235,6 +258,51 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                     }
             }
 
+            let tempKnowledge = new Map<string, userKnowledge>();
+            for (let i = 0; i < keysInWord.length; i++) {
+                let key = keysInWord[i]
+                let color = colorsInWord[i]
+
+                if (!tempKnowledge.has(key)) tempKnowledge.set(key, {correct: {count: 0, index: []}, present: 0, count: null})
+                let value = tempKnowledge.get(key);
+
+                switch (color) {
+                    case 0: tempKnowledge.set(key, {correct: value.correct, present: value.present, count: 1}); break;
+                    case 1: tempKnowledge.set(key, {correct: value.correct, present: (value.present + 1), count: null}); break;
+                    case 2: tempKnowledge.set(key, {correct: {count: value.correct.count + 1, index: [...value.correct.index, i]}, present: value.present, count: null}); break;
+                    default: break;
+                }
+            }
+
+            for (let i = 0; i < keysInWord.length; i++) {
+                let key = keysInWord[i];
+                let temp = tempKnowledge.get(key);
+
+                if (hard && knowledge.current.has(key)) {
+                    let mem = knowledge.current.get(key)
+                    // has green in correct indices
+                    for (let idx of mem.correct.index) {
+                        if (!temp.correct.index.includes(idx)) {
+                            handleWrongWord();
+                            return;
+                        }
+                    }
+
+                    console.log(key, temp, mem)
+                    // not enough correct or present
+                    if (mem.correct.count > temp.correct.count || mem.present > temp.present) {
+                        handleWrongWord();
+                        return
+                    }
+                    // adding an extra key
+                    if (colorsInWord[i] === 0 && mem.count !== null) {
+                        handleWrongWord();
+                        return
+                    }
+                }
+            }
+
+            // handles leaving out present/correct user is aware of
             if (hard) {
                 for (let key of Array.from(keys.current.keys()).filter(key => keys.current.get(key) > 0)) {
                     if (!guess.includes(key)) 
@@ -244,6 +312,25 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                     }
                 } 
             }
+
+            for (let i = 0; i < keysInWord.length; i++) {
+                let key = keysInWord[i]
+                if (!knowledge.current.has(key)) knowledge.current.set(key, tempKnowledge.get(key))
+                else {
+                    let mem = knowledge.current.get(key)
+                    let temp = tempKnowledge.get(key)
+                    let present = (mem.present < temp.present) ? temp.present : mem.present;
+                    let count = (mem.count !== null || temp.count !== null) ? 1 : null;
+                    
+                    let correctCount = (mem.correct.count < temp.correct.count) ? temp.correct.count : mem.correct.count;
+                    let correctIndices = [...mem.correct.index];
+                    for (let idx of temp.correct.index) {
+                        if (!correctIndices.includes(idx)) correctIndices.push(idx)
+                    }
+                    knowledge.current.set(key, {correct: {count: correctCount, index: correctIndices}, present: present, count: count})
+                }
+            }
+            localStorage.setItem('knowledge', JSON.stringify(encodeMap(knowledge.current)))
 
             for (let cellIndex = curRowRef.current * WORD_LENGTH, iterator = 0; 
                 cellIndex < (curRowRef.current + 1) * WORD_LENGTH, iterator < WORD_LENGTH; 
