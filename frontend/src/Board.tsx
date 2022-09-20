@@ -287,6 +287,8 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                             return;
                         }
                     }
+
+                    console.log(key, temp, mem)
                     // not enough correct or present
                     if (mem.correct.count > temp.correct.count || mem.present > temp.present) {
                         handleWrongWord();
@@ -298,6 +300,17 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                         return
                     }
                 }
+            }
+
+            // handles leaving out present/correct user is aware of
+            if (hard) {
+                for (let key of Array.from(keys.current.keys()).filter(key => keys.current.get(key) > 0)) {
+                    if (!guess.includes(key)) 
+                    {
+                        handleWrongWord();
+                        return;
+                    }
+                } 
             }
 
             for (let i = 0; i < keysInWord.length; i++) {
@@ -317,7 +330,6 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                     knowledge.current.set(key, {correct: {count: correctCount, index: correctIndices}, present: present, count: count})
                 }
             }
-            encodeMap(knowledge.current)
             localStorage.setItem('knowledge', JSON.stringify(encodeMap(knowledge.current)))
 
             for (let cellIndex = curRowRef.current * WORD_LENGTH, iterator = 0; 
