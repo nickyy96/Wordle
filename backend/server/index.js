@@ -12,7 +12,7 @@ app.use(cors({
   origin: '*'
 }));
 
-const PORT = 8080;
+const PORT = 8443;
 
 app.get("/api", (req, res) => {
   const newDate = new Date();
