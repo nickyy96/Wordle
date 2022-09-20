@@ -6,13 +6,14 @@ const app = express();
 
 const d = new Date();
 let hour = d.getHours();
-let word = WORD_LIST[Math.floor(Math.random()*WORD_LIST.length)];
+// let word = WORD_LIST[Math.floor(Math.random()*WORD_LIST.length)];
+let word = 'asses';
 
 app.use(cors({
   origin: '*'
 }));
 
-const PORT = 8443;
+const PORT = 8080;
 
 app.get("/api", (req, res) => {
   const newDate = new Date();
@@ -21,7 +22,8 @@ app.get("/api", (req, res) => {
     word = WORD_LIST[Math.floor(Math.random()*WORD_LIST.length)];
   }
   console.log(word);
-  res.json({ word: word });
+  // res.json({ word: word });
+  res.json({word: 'asses'})
 });
 
 app.listen(PORT, () => {
