@@ -285,7 +285,6 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                         }
                     }
 
-                    console.log(key, temp, mem)
                     // not enough correct or present
                     if (mem.correct.count > temp.correct.count || mem.present > temp.present) {
                         handleWrongWord();
