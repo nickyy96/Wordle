@@ -336,7 +336,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"ALPHABET\": () => (/* binding */ ALPHABET),\n/* harmony export */   \"FLIP_LENGTH\": () => (/* binding */ FLIP_LENGTH),\n/* harmony export */   \"NUM_ROWS\": () => (/* binding */ NUM_ROWS),\n/* harmony export */   \"URL\": () => (/* binding */ URL),\n/* harmony export */   \"WORD_LENGTH\": () => (/* binding */ WORD_LENGTH)\n/* harmony export */ });\nconst NUM_ROWS = 6;\r\nconst WORD_LENGTH = 5;\r\nconst ALPHABET = \"QWERTYUIOPASDFGHJKLZXCVBNM\";\r\nconst FLIP_LENGTH = 250;\r\nconst URL = 'http://143.198.163.137:8080';\r\n\n\n//# sourceURL=webpack://website/./src/utils/globals.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"ALPHABET\": () => (/* binding */ ALPHABET),\n/* harmony export */   \"FLIP_LENGTH\": () => (/* binding */ FLIP_LENGTH),\n/* harmony export */   \"NUM_ROWS\": () => (/* binding */ NUM_ROWS),\n/* harmony export */   \"URL\": () => (/* binding */ URL),\n/* harmony export */   \"WORD_LENGTH\": () => (/* binding */ WORD_LENGTH)\n/* harmony export */ });\nconst NUM_ROWS = 6;\r\nconst WORD_LENGTH = 5;\r\nconst ALPHABET = \"QWERTYUIOPASDFGHJKLZXCVBNM\";\r\nconst FLIP_LENGTH = 250;\r\nconst URL = 'https://wordle-api.nickyyarnall.dev:443';\r\n\n\n//# sourceURL=webpack://website/./src/utils/globals.ts?");
 
 /***/ }),
 
