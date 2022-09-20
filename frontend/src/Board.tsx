@@ -264,7 +264,9 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                 switch (color) {
                     case 0: tempKnowledge.set(key, {correct: value.correct, present: value.present, count: 1}); break;
                     case 1: tempKnowledge.set(key, {correct: value.correct, present: (value.present + 1), count: null}); break;
-                    case 2: tempKnowledge.set(key, {correct: {count: value.correct.count + 1, index: [...value.correct.index, i]}, present: value.present, count: null}); break;
+                    case 2: tempKnowledge.set(key, {correct: {count: value.correct.count + 1, index: [...value.correct.index, i]}, 
+                        present: (value.present + 1), 
+                        count: null}); break;
                     default: break;
                 }
             }
@@ -285,7 +287,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
 
                     console.log(key, temp, mem)
                     // not enough correct or present
-                    if (mem.correct.count + mem.present > temp.correct.count + temp.present) {
+                    if (mem.correct.count > temp.correct.count || mem.present > temp.present) {
                         handleWrongWord();
                         return
                     }
