@@ -5,14 +5,19 @@
 @import 'slider';
 
 body {
-  height: 100vh;
+  position: absolute;
+  bottom: 0px;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  min-height: -webkit-fill-available;
   overflow: hidden;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 #wordle-game-root {
-  height: 100vh;
+  height: -webkit-fill-available;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -59,7 +64,7 @@ body {
 
 @media screen and (max-height: 800px) {
   .wordle-header {
-    height: 30px;
+    height: 40px;
   }
   .wordle-header-text {
     font-size: 20px;
@@ -238,13 +243,13 @@ p {
   justify-content: right;
   font-weight: bold;
   font-size: 15px;
-  color: theme-var($--theme-error-bg)
+  color: theme-var($--theme-error-bg);
 }
 
 .settings-unit {
   display: inline-flex;
   justify-content: space-between;
-  height: 50px;
+  min-height: 50px;
   align-items: center;
   border-bottom: 1px solid theme-var($--theme-cell-border);
 }
@@ -258,6 +263,7 @@ p {
   flex-direction: column;
   justify-content: center;
   margin-left: 5px;
+  margin-bottom: 5px;
   row-gap: 2px;
   height: 100%;
 }
@@ -287,6 +293,12 @@ p {
   max-width: 90%;
   height: 420px;
   overflow: hidden;
+}
+
+@media screen and (max-height: 800px) {
+  .board {
+    height: 400px;
+  }
 }
 
 .cell {
@@ -485,7 +497,8 @@ p {
 
 
 .keyboard-row {
-  width: 100%;
+  width: -webkit-fill-available;
+  -webkit-box-orient: horizontal;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -497,9 +510,8 @@ p {
   height: 58px;
   margin: 0 6px 0 0;
   background-color: theme-var($--theme-key-bg);
-  width: 100%;
   border-radius: 4px;
-  flex: 1;
+  min-width: 9%;
   color: theme-var($--theme-font-color);
   font-weight: bold;
   border-width: 0px;
@@ -523,7 +535,10 @@ p {
 }
 
 .key-one-and-a-half, .key-one-and-a-half:focus {
-  flex: 1.5;
+  min-width: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
   background-color: theme-var($--theme-key-bg);
 }
@@ -533,7 +548,7 @@ p {
 }
 
 .key-half:last-child {
-  margin-right: 0px;
+  margin-right: -px;
 }
 
 #backspace {
