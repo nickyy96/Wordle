@@ -349,31 +349,30 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             
             setTimeout(() => updateKeys(keysInWord, colorsInWord), FLIP_LENGTH * 5);
             if (previous.current.length === NUM_ROWS - 1 ) {
-                let check = true;
                 for (let idx = 0; idx < WORD_LENGTH; idx++) {
                     if (word.charAt(idx) !== input[idx]) {
-                        check = false;
-                        break;
+                        previous.current = [...previous.current, {row: input, active: true}];
+                        previousColors.current = [...previousColors.current, colorsInWord]
+                        setInput([]);
+
+                        localStorage.setItem('previousColors', JSON.stringify(previousColors.current))
+                        localStorage.setItem('previous', JSON.stringify(previous.current));
+
+                        setMessages([...messages, word.toLocaleUpperCase()])
+                        setTimeout(() => {
+                            let elt = document.getElementById('result-message');
+                            elt.classList.add('deleting');
+                            setTimeout(() => {
+                                elt.remove()
+                                setWin(true)
+                                clearCache(0)
+                                setModal('lose')
+                                localStorage.setItem('toggle', 'lose')
+                            }, 195)
+                        }, 1500)
+                        return
                     }
                 }
-
-                if (check) {
-                    curRowRef.current = 6;
-                    return;
-                }
-                setMessages([...messages, word.toLocaleUpperCase()])
-                setTimeout(() => {
-                    let elt = document.getElementById('result-message');
-                    elt.classList.add('deleting');
-                    setTimeout(() => {
-                        elt.remove()
-                        setWin(true)
-                        clearCache(0)
-                        setModal('lose')
-                        localStorage.setItem('toggle', 'lose')
-                    }, 195)
-                }, 1500)
-                return
             }
 
             previous.current = [...previous.current, {row: input, active: true}];
@@ -418,7 +417,10 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
     }, [input, win, messages, hard])
 
     const process = (): rowProps[] => {
-        const rows: rowProps[] = [...previous.current, {row: input, active: false}];
+        const rows: rowProps[] = (previous.current.length < 6) ? 
+        [...previous.current, {row: input, active: false}] :
+        [...previous.current]
+
         for (let i = 0; i < NUM_ROWS - (previous.current.length + 1); i++) {
             rows.push({row: [], active: false});
         }
