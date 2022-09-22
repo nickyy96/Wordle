@@ -34,6 +34,7 @@ body {
   border-bottom: 1px solid theme-var($--theme-cell-border);
 }
 
+
 .wordle-header-text-container {
   display: flex;
   flex-direction: row;
@@ -56,10 +57,23 @@ body {
   margin-top: 5px;
 }
 
+@media screen and (max-height: 800px) {
+  .wordle-header {
+    height: 5vh;
+  }
+  .wordle-header-text {
+    font-size: 20px;
+  }
+
+  .wordle-header-hard {
+    margin-top: 2px;
+    font-size: 9px;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   .wordle-header-text-container {
     justify-content: flex-start;
-    font-size: 28px;
   }
 }
 
@@ -74,7 +88,7 @@ body {
 .menu-button-container {
   display: flex;
   flex-direction: row;
-  column-gap: 5px;
+  column-gap: 10px;
   margin-right: 10px;
 }
 
@@ -101,7 +115,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-  margin: 0 auto;
   overflow: hidden;
 }
 
@@ -122,10 +135,10 @@ body {
 .modal {
   background-color: theme-var($--theme-modal-color);
   position: relative;
-  max-width: 500px;
+  width: 484px;
+  max-width: 90%;
   max-height: 100%;
   padding: 16px;
-  min-width: 400px;
   font-size: bold;
   border: 1px solid theme-var($--theme-modal-border);
   border-radius: 8px;
@@ -271,6 +284,7 @@ p {
   padding: 10px;
   box-sizing: border-box;
   width: 350px;
+  max-width: 90%;
   height: 420px;
   overflow: hidden;
 }
