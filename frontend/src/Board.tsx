@@ -201,6 +201,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
     }
 
     const handleInput = (e: KeyboardEvent) => {
+        console.log(e)
         if (lock.current || win) return
         if (e.key === 'Enter') {
             HighlightPress(document.getElementById('enter'));
@@ -383,7 +384,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             localStorage.setItem('previous', JSON.stringify(previous.current));
 
             curRowRef.current = curRowRef.current + 1;
-        } else if (e.keyCode >= 65 && e.keyCode <= 90) {
+        } else if (ALPHABET.includes(e.key.toLocaleUpperCase())) {
             HighlightPress(document.getElementById(e.key.toLocaleUpperCase()));
             if (previous.current.length > NUM_ROWS - 1) return
             if (input.length === WORD_LENGTH) return
@@ -394,7 +395,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             let elt = document.getElementsByClassName('cell')[eltIndex];
             setTimeout(() => elt.classList.add('bubble', 'after-bubble'))
             setTimeout(() => elt.classList.remove('bubble'), 100)
-        } else if (e.keyCode === 8) {
+        } else if (e.key === 'Backspace') {
             HighlightPress(document.getElementById('backspace'));
             if (input.length === 0) return
 
@@ -409,6 +410,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
     }
 
     useEffect(() => {
+        window.removeEventListener("keydown", handleInput)
         window.addEventListener("keydown", handleInput)
 
         return () => {

@@ -28,7 +28,7 @@ body {
   align-items: center;
   justify-content: flex-start;
   flex-wrap: nowrap;
-  width: 100%;
+  min-width: 100%;
   height: 65px;
   color: theme-var($--theme-error-bg);
   border-bottom: 1px solid theme-var($--theme-cell-border);
@@ -88,7 +88,7 @@ body {
 }
 
 .keyboard-container {
-  width: 484px;
+  min-width: 484px;
   height: 200px;
   display: flex;
   flex-direction: column;
@@ -460,7 +460,7 @@ p {
   left: 10%;
   right: 10%;
   top: 5%;
-  bottom: 10%;
+  bottom: 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -478,7 +478,7 @@ p {
   margin: 0 auto 8px;
 }
 
-.key {
+.key, .key:focus{
   height: 58px;
   margin: 0 6px 0 0;
   background-color: theme-var($--theme-key-bg);
@@ -488,6 +488,8 @@ p {
   color: theme-var($--theme-font-color);
   font-weight: bold;
   border-width: 0px;
+  outline: none;
+  cursor: pointer;
 }
 
 .modal-key {
@@ -505,7 +507,7 @@ p {
   margin: 0px;
 }
 
-.key-one-and-a-half {
+.key-one-and-a-half, .key-one-and-a-half:focus {
   flex: 1.5;
   font-size: 12px;
   background-color: theme-var($--theme-key-bg);
