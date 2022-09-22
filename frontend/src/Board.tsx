@@ -201,6 +201,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
     }
 
     const handleInput = (e: KeyboardEvent) => {
+        console.log(e)
         if (lock.current || win) return
         if (e.key === 'Enter') {
             HighlightPress(document.getElementById('enter'));
@@ -349,31 +350,30 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             
             setTimeout(() => updateKeys(keysInWord, colorsInWord), FLIP_LENGTH * 5);
             if (previous.current.length === NUM_ROWS - 1 ) {
-                let check = true;
                 for (let idx = 0; idx < WORD_LENGTH; idx++) {
                     if (word.charAt(idx) !== input[idx]) {
-                        check = false;
-                        break;
+                        previous.current = [...previous.current, {row: input, active: true}];
+                        previousColors.current = [...previousColors.current, colorsInWord]
+                        setInput([]);
+
+                        localStorage.setItem('previousColors', JSON.stringify(previousColors.current))
+                        localStorage.setItem('previous', JSON.stringify(previous.current));
+
+                        setMessages([...messages, word.toLocaleUpperCase()])
+                        setTimeout(() => {
+                            let elt = document.getElementById('result-message');
+                            elt.classList.add('deleting');
+                            setTimeout(() => {
+                                elt.remove()
+                                setWin(true)
+                                clearCache(0)
+                                setModal('lose')
+                                localStorage.setItem('toggle', 'lose')
+                            }, 195)
+                        }, 1500)
+                        return
                     }
                 }
-
-                if (check) {
-                    curRowRef.current = 6;
-                    return;
-                }
-                setMessages([...messages, word.toLocaleUpperCase()])
-                setTimeout(() => {
-                    let elt = document.getElementById('result-message');
-                    elt.classList.add('deleting');
-                    setTimeout(() => {
-                        elt.remove()
-                        setWin(true)
-                        clearCache(0)
-                        setModal('lose')
-                        localStorage.setItem('toggle', 'lose')
-                    }, 195)
-                }, 1500)
-                return
             }
 
             previous.current = [...previous.current, {row: input, active: true}];
@@ -384,7 +384,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             localStorage.setItem('previous', JSON.stringify(previous.current));
 
             curRowRef.current = curRowRef.current + 1;
-        } else if (e.keyCode >= 65 && e.keyCode <= 90) {
+        } else if (ALPHABET.includes(e.key.toLocaleUpperCase())) {
             HighlightPress(document.getElementById(e.key.toLocaleUpperCase()));
             if (previous.current.length > NUM_ROWS - 1) return
             if (input.length === WORD_LENGTH) return
@@ -395,7 +395,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             let elt = document.getElementsByClassName('cell')[eltIndex];
             setTimeout(() => elt.classList.add('bubble', 'after-bubble'))
             setTimeout(() => elt.classList.remove('bubble'), 100)
-        } else if (e.keyCode === 8) {
+        } else if (e.key === 'Backspace') {
             HighlightPress(document.getElementById('backspace'));
             if (input.length === 0) return
 
@@ -410,6 +410,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
     }
 
     useEffect(() => {
+        window.removeEventListener("keydown", handleInput)
         window.addEventListener("keydown", handleInput)
 
         return () => {
@@ -418,7 +419,10 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
     }, [input, win, messages, hard])
 
     const process = (): rowProps[] => {
-        const rows: rowProps[] = [...previous.current, {row: input, active: false}];
+        const rows: rowProps[] = (previous.current.length < 6) ? 
+        [...previous.current, {row: input, active: false}] :
+        [...previous.current]
+
         for (let i = 0; i < NUM_ROWS - (previous.current.length + 1); i++) {
             rows.push({row: [], active: false});
         }

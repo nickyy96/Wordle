@@ -57,6 +57,7 @@ const App = () => {
                 localStorage.removeItem('previous')
                 localStorage.removeItem('previousColors')
                 localStorage.removeItem('input')
+                setInput([])
                 localStorage.removeItem('knowledge')
               }
 

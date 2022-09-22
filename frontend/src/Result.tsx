@@ -10,7 +10,7 @@ interface ResultProps {
 }
 
 const Result = ({win, minutes, setMinutes, seconds, setSeconds }: ResultProps) => {
-    const [message, setMessage] = useState((win) ? "Victory!" : "Refresh for another try!")
+    const [message, setMessage] = useState((win) ? "Victory!" : "Better Luck Next Time!")
 
     useEffect(() => {
         setTimeout(() => {
