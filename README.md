@@ -19,6 +19,11 @@ A challenge in designing this app is the logical structure of hard mode. For cla
 Another challenge presented in designing this app is handling duplicate letters. For example, if the word is `socks` and
 the user guesses `sassy`, the first s should be marked correct, the second present, and the third absent.
 
+## Compatibilities
+Another challenge driving this creation was mobile and browser compatibility. Using vendor prefixes and a lot of testing,  
+this app is compatible with **all** mobile devices and Internet Explorer, Mozilla Firefox, Chrome, and Safari (and likely any
+others).
+
 ## Contact
 Should you find yourself with any questions or comments regarding this app (or potentially any discovered bugs), please  
 reach out to `nicholas_yarnall@brown.edu`. Enjoy :)
