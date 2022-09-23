@@ -289,20 +289,13 @@ p {
   padding: 10px;
   box-sizing: border-box;
   width: 350px;
-  height: 420px;
-  max-height: 95%;
+  // height: 420px;
+  height: -webkit-fill-available;
+  max-height: 420px;
   overflow: hidden;
 }
 
 @media screen and (max-height: 800px) {
-  .board {
-    height: 350px;
-    width: 300px;
-  }
-}
-
-
-@media screen and (max-height: 600px) {
   .board {
     width: 300px;
   }
