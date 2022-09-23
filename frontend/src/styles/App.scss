@@ -16,8 +16,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
 #wordle-game-root {
   height: -webkit-fill-available;
+  min-height: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -564,6 +566,7 @@ p {
 
 .keyboard-row {
   width: -webkit-fill-available;
+  width: -moz-available;
   -webkit-box-orient: horizontal;
   display: flex;
   flex-direction: row;
