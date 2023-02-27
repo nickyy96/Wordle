@@ -21,7 +21,7 @@ the user guesses `sassy`, the first s should be marked correct, the second prese
 
 ## Compatibilities
 Another challenge driving this creation was mobile and browser compatibility. Using vendor prefixes and a lot of testing,  
-this app is compatible with **all** mobile devices and Internet Explorer, Mozilla Firefox, Chrome, and Safari (and likely any
+this app is compatible with **all** mobile devices and Microsoft Edge, Mozilla Firefox, Chrome, and Safari (and likely any
 others).
 
 ## Contact
