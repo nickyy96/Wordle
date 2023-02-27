@@ -349,7 +349,7 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             }
             
             setTimeout(() => updateKeys(keysInWord, colorsInWord), FLIP_LENGTH * 5);
-            if (previous.current.length === NUM_ROWS - 1 ) {
+            if (previous.current.length === NUM_ROWS - 1 && (colorsInWord.includes(0) || colorsInWord.includes(1))) {
                 for (let idx = 0; idx < WORD_LENGTH; idx++) {
                     if (word.charAt(idx) !== input[idx]) {
                         previous.current = [...previous.current, {row: input, active: true}];

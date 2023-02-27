@@ -1,0 +1,13 @@
+when should a key be orange?
+
+a key should be orange if
+	- there is a # of orange/green of this letter already that is less than the number of occurrences of this letter in the word AND there is not a green in the rest of the word
+
+to be orange -> # of orange/green before index + # of green after index has to be less than # of occurrences of the letter in the word
+
+a key should not be orange if
+ 	- there is an orange already in the word
+
+a key should be green if
+ 	- the letter matches the index in the word
+
