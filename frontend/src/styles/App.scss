@@ -33,12 +33,13 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   flex-wrap: nowrap;
   min-width: 100%;
   height: 65px;
   color: theme-var($--theme-error-bg);
   border-bottom: 1px solid theme-var($--theme-cell-border);
+  position: relative;
 }
 
 
@@ -46,7 +47,9 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  flex-grow: 2;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   flex-direction: row;
   column-gap: 1px;
 }
@@ -78,8 +81,13 @@ body {
 }
 
 @media only screen and (max-width: 800px) {
-  .wordle-header-text-container {
+  .wordle-header {
     justify-content: flex-start;
+  }
+  .wordle-header-text-container {
+    position: relative;
+    left: 0%;
+    transform: translateX(0%);
   }
 }
 
@@ -96,6 +104,7 @@ body {
   flex-direction: row;
   column-gap: 10px;
   margin-right: 10px;
+  margin-left: auto;
 }
 
 .container-menu-button {

@@ -362,9 +362,9 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
                         setMessages([...messages, word.toLocaleUpperCase()])
                         setTimeout(() => {
                             let elt = document.getElementById('result-message');
-                            elt.classList.add('deleting');
+                            // elt.classList.add('deleting'); Remove comments to make correct word fade away
                             setTimeout(() => {
-                                elt.remove()
+                                // elt.remove()
                                 setWin(true)
                                 clearCache(0)
                                 setModal('lose')
