@@ -120,7 +120,20 @@ const Chart = ({message}: chartProps) => {
           return <path d={pathData} fillOpacity={check(idx)} key={index} onMouseOver={() => clear(index + 1)} onMouseLeave={() => fill()} className={`path-${idx++}`}/>;
         });
         return arr;
-      }
+    }
+    
+    const roundToNearest = (wins: number, losses: number): number => {
+        // only time it should be a 100% win rate
+        if (wins / losses === 1) return 100
+        
+        const rounded = Math.round(wins/(wins + losses)*100)
+
+        // should never round down to a 0% win rate
+        if (rounded === 0) return 1
+        // should never round up to a 100% win rate
+        if (rounded === 100) return 99
+        return rounded
+    }
 
     return (
         <div className="pie-container">
@@ -133,7 +146,7 @@ const Chart = ({message}: chartProps) => {
                     </div>
                     <div className='stats-unit'>
                         {getWins() > 0 ?
-                            <div className="stats-large">{Math.ceil((getWins()/(getWins() + losses)*100))}</div>
+                            <div className="stats-large">{roundToNearest(getWins(), losses)}</div>
                             : <div className="stats-large">{0}</div>
                         }
                         <div className="stats-small">Win %</div>
