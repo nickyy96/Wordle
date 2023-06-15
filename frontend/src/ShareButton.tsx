@@ -47,9 +47,9 @@ const generateMessage = () => {
   const hour = now.getHours();
   const title = `Wordle ${hour + 1} of 24\n${loss ? "❌" : i}/6 ${
     loss ? "😢😢😢" : win
-  }\n`;
+  }\n\n`;
 
-  return title.concat(message);
+  return title.concat(message).concat('\n\n© Nicholas Yarnall');
 };
 
 const handleShare = () => {
