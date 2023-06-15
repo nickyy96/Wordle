@@ -1,48 +1,64 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Chart from "./Chart";
+import ShareButton from "./ShareButton";
 
 interface ResultProps {
-    win: boolean
-    minutes: number
-    setMinutes: Dispatch<SetStateAction<number>>
-    seconds: number
-    setSeconds: Dispatch<SetStateAction<number>>
+  win: boolean;
+  minutes: number;
+  setMinutes: Dispatch<SetStateAction<number>>;
+  seconds: number;
+  setSeconds: Dispatch<SetStateAction<number>>;
 }
 
-const Result = ({win, minutes, setMinutes, seconds, setSeconds }: ResultProps) => {
-    const [message, setMessage] = useState((win) ? "Victory!" : "Better Luck Next Time!")
+const Result = ({
+  win,
+  minutes,
+  setMinutes,
+  seconds,
+  setSeconds,
+}: ResultProps) => {
+  const [message, setMessage] = useState(
+    win ? "Victory!" : "Better Luck Next Time!"
+  );
 
-    useEffect(() => {
-        setTimeout(() => {
-            setSeconds(60 - new Date().getSeconds())
-            if (new Date().getSeconds() === 0) setMinutes(60 - new Date().getMinutes())
-            else setMinutes(59 - new Date().getMinutes())
-        }, 1000)
-    }, [minutes, seconds])
+  useEffect(() => {
+    setTimeout(() => {
+      setSeconds(60 - new Date().getSeconds());
+      if (new Date().getSeconds() === 0)
+        setMinutes(60 - new Date().getMinutes());
+      else setMinutes(59 - new Date().getMinutes());
+    }, 1000);
+  }, [minutes, seconds]);
 
-    useEffect(() => {
-        setTimeout(() => {
-            setMessage('Contact Me!')
-        }, 10000)
-    }, [])
-    return (
-        <>
-            <h1 className='modal-header'>
-                {message}
-            </h1>
-            <section className="modal-section">
-                <Chart message={true}/>
-                <br></br>
-                {(minutes !== 60) &&
-                <div className='clock-container'>
-                    <div className="next-wordle-before">NEXT WORDLE</div>
-                    {(seconds === 60) ?
-                    <div className="next-wordle">{minutes < 10 ? '0' + minutes : minutes}:00</div> :
-                    <div className="next-wordle">{minutes < 10 ? '0' + minutes : minutes}:{(seconds < 10) ? '0' + seconds : seconds}</div>}
-                </div>
-                }
-            </section>
-            {/* <section className='modal-section'>
+  useEffect(() => {
+    setTimeout(() => {
+      setMessage("Contact Me!");
+    }, 10000);
+  }, []);
+  return (
+    <>
+      <h1 className="modal-header">{message}</h1>
+      <section className="modal-section">
+        <Chart message={true} />
+        <br></br>
+        {minutes !== 60 && (
+          <div className="clock-container">
+            <ShareButton win={true}/>
+            <div className="next-wordle-before">NEXT WORDLE</div>
+            {seconds === 60 ? (
+              <div className="next-wordle">
+                {minutes < 10 ? "0" + minutes : minutes}:00
+              </div>
+            ) : (
+              <div className="next-wordle">
+                {minutes < 10 ? "0" + minutes : minutes}:
+                {seconds < 10 ? "0" + seconds : seconds}
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+      {/* <section className='modal-section'>
                 <div className="modal-examples">
                     <div className="socials-container">
                         <div className="socials-unit">
@@ -67,11 +83,11 @@ const Result = ({win, minutes, setMinutes, seconds, setSeconds }: ResultProps) =
                     </div>
                 </div>
             </section> */}
-            <div className="modal-footer">
-                <p></p>
-            </div>
-        </>
-    )
-}
+      {/* <div className="modal-footer">
+        <p></p>
+      </div> */}
+    </>
+  );
+};
 
 export default Result;

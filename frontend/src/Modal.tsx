@@ -12,6 +12,7 @@ interface ModalProps {
   setModal: Dispatch<SetStateAction<string>>;
   hard: boolean;
   setHard: Dispatch<SetStateAction<boolean>>;
+  win: boolean;
 }
 
 const loadBlind = () => {
@@ -42,6 +43,7 @@ const Modal = ({
   setModal,
   hard,
   setHard,
+  win,
 }: ModalProps) => {
   const [toggleSlow, setToggleSlow] = useState(false);
   const [toggleFast, setToggleFast] = useState(false);
@@ -100,7 +102,7 @@ const Modal = ({
                 />
               )}
               {toggle === 'stats' && (
-                <Stats/>
+                <Stats win={win}/>
               )}
             </div>
             <button className="close-modal" onClick={close}>

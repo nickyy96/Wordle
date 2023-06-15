@@ -102,20 +102,13 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             for (let cellIndex = rowIdx * WORD_LENGTH, iterator = 0; 
                 iterator < WORD_LENGTH; 
                 cellIndex++, iterator++) {
-                    let elt = document.getElementsByClassName('cell')[cellIndex];
-                    elt.setAttribute("flip-wait", `${iterator}`);
-                    setTimeout(() => elt.classList.add('flip-in'));
+                    let elt = document.getElementsByClassName('cell')[cellIndex] as HTMLElement;
+                    elt.classList.add('flip')
+                    elt.style.animationDelay = `${iterator * 150}ms`;
 
                     setTimeout(() => {
-                        elt.setAttribute("flip-wait", '0');
-                        elt.classList.add('flip-out');
                         elt.setAttribute("data-state", `${colors[previousColors.current[rowIdx][iterator]]}`)
-                        setTimeout(() => {
-                            elt.classList.remove('flip-in');
-                            elt.classList.remove('flip-out');
-                            elt.removeAttribute("flip-wait");
-                        }, FLIP_LENGTH + 50);
-                    }, FLIP_LENGTH * (iterator + 1))
+                    }, FLIP_LENGTH + iterator * 150)
             }
         }
         for (let idx = curRowRef.current * WORD_LENGTH; idx < curRowRef.current * WORD_LENGTH + input.length; idx++) {
@@ -332,23 +325,16 @@ const Board = ({messages, setMessages, input, setInput, win, setWin, hard, setMo
             for (let cellIndex = curRowRef.current * WORD_LENGTH, iterator = 0; 
                 cellIndex < (curRowRef.current + 1) * WORD_LENGTH, iterator < WORD_LENGTH; 
                 cellIndex++, iterator++) {
-                    let elt = document.getElementsByClassName('cell')[cellIndex];
-                    elt.setAttribute("flip-wait", `${iterator}`);
-                    setTimeout(() => elt.classList.add('flip-in'));
+                    let elt = document.getElementsByClassName('cell')[cellIndex] as HTMLElement;
+                    elt.classList.add('flip')
+                    elt.style.animationDelay = `${iterator * 150}ms`;
 
                     setTimeout(() => {
-                        elt.setAttribute("flip-wait", '0');
-                        elt.classList.add('flip-out');
                         elt.setAttribute("data-state", `${colors[colorsInWord[iterator]]}`)
-                        setTimeout(() => {
-                            elt.classList.remove('flip-in');
-                            elt.classList.remove('flip-out');
-                            elt.removeAttribute("flip-wait");
-                        }, FLIP_LENGTH + 50);
-                    }, FLIP_LENGTH * (iterator + 1))
+                    }, FLIP_LENGTH + iterator * 150)
             }
             
-            setTimeout(() => updateKeys(keysInWord, colorsInWord), FLIP_LENGTH * 5);
+            setTimeout(() => updateKeys(keysInWord, colorsInWord), 1050);
             if (previous.current.length === NUM_ROWS - 1 && (colorsInWord.includes(0) || colorsInWord.includes(1))) {
                 for (let idx = 0; idx < WORD_LENGTH; idx++) {
                     if (word.charAt(idx) !== input[idx]) {

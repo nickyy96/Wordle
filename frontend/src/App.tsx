@@ -152,6 +152,7 @@ const App = () => {
         setModal={setModal}
         hard={hard}
         setHard={setHard}
+        win={win}
       ></Modal>
       <Stream messages={messages}></Stream>
       <KeyboardContainer />

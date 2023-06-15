@@ -1,10 +1,11 @@
 import Chart from "./Chart"
+import ShareButton from "./ShareButton"
 
 interface statsProps {
-
+    win: boolean;
 }
 
-const Stats = ({}: statsProps) => {
+const Stats = ({win}: statsProps) => {
     return (
         <>
         <h1 className='modal-header'>
@@ -13,9 +14,8 @@ const Stats = ({}: statsProps) => {
             <section className="modal-section">
                 <Chart message={false}/>
             </section>
-            <div className="modal-footer">
-                <p></p>
-            </div>
+            <br></br>
+            <ShareButton win={win}/>
         </>
     )
 }
